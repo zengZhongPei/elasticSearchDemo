@@ -1,0 +1,3 @@
+FROM elastic/logstash:7.4.2
+RUN logstash-plugin install logstash-input-jdbc
+RUN logstash-plugin install logstash-output-elasticsearch

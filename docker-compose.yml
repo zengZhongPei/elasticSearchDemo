@@ -1,0 +1,109 @@
+version: '2.2'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+    container_name: es01
+    restart: always
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticSearch/data/data01:/usr/share/elasticsearch/data
+      - ./elasticSearch/config/es01/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+    container_name: es02
+    restart: always
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticSearch/data/data02:/usr/share/elasticsearch/data
+      - ./elasticSearch/config/es02/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - elastic
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+    container_name: es03
+    restart: always
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticSearch/data/data03:/usr/share/elasticsearch/data
+      - ./elasticSearch/config/es03/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - elastic
+  es04:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+    container_name: es04
+    restart: always
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticSearch/data/data04:/usr/share/elasticsearch/data
+      - ./elasticSearch/config/es04/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - elastic
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.4.2
+    container_name: kibana
+    ports:
+      - 5601:5601
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml      
+    depends_on:
+      - es01
+    networks:
+      - elastic
+  logstash:
+    build:
+      context: ./logstash
+      dockerfile: Dockerfile-logstash
+      args:
+        buildno: 1
+    image: logstash
+    container_name: logstash
+    networks:
+      - elastic
+    volumes:
+      - ./logstash/logstashConfig/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/logstashConfig/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+    depends_on:
+      - es01
+    ports:
+      - "9600:9600"
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+  kibana:
+    driver: local
+  logstash:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

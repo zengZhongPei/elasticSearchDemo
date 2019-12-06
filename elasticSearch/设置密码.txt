@@ -1,0 +1,7 @@
+----官方文档：https://www.elastic.co/guide/en/elasticsearch/reference/7.4/encrypting-communications-certificates.html
+
+1、进入容器中
+
+2、执行命令
+	./ bin / elasticsearch - certutil ca
+	./bin/elasticsearch-certutil cert --ca taotuo.p12 --dns localhost --ip 127.0.0.1,::1 --out config/certs/当前容器名.p12

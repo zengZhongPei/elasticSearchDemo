@@ -1,0 +1,14 @@
+cluster.name: es-TaoTuo
+node.name: es01
+node.master: true
+node.data: false
+bootstrap.memory_lock: true
+network.host: 0.0.0.0
+discovery.seed_hosts:
+  - es04
+cluster.initial_master_nodes:
+  - es01
+  - es04
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+xpack.monitoring.collection.enabled: true
